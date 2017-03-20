@@ -83,6 +83,8 @@ def main():
     #Generate train and test data
     data_shape = np.shape(facility_data)
     X_train, X_test, y_train, y_test = facility_data[0:int(data_shape[0] * (1-TEST_SPLIT))], facility_data[int(data_shape[0] * TEST_SPLIT):], labels[0:int(data_shape[0] * (1-TEST_SPLIT))], labels[int(data_shape[0] * TEST_SPLIT):]
+    print "Sample from the Training data: ", X_train[0:10]
+    print "Sample from the Training-Targets data: ", y_train[0:10]
     shape = np.shape(X_train)
     indices = range(0, shape[0])
     training_idx, validation_idx = indices[:shape[0] // 5 * 4], indices[shape[0] // 5 * 4:]
@@ -95,8 +97,8 @@ def main():
     Ypreds = model_xgb.predict(Xtest)
     print "RMSE Error is: "
     print sqrt(mean_squared_error(y_test, Ypreds))
-    l1, = plt.plot(y_test[100:200], 'r', label='line1')
-    l2, = plt.plot(Ypreds[100:200], 'g', label='line2')
+    l1, = plt.plot(y_test[100:200], 'r', label='Ground Truth')
+    l2, = plt.plot(Ypreds[100:200], 'g', label='Predictions')
     plt.ylabel("actual rate of change")
     plt.xlabel("time steps")
     plt.legend(handles=[l1, l2])
