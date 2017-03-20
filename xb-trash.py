@@ -55,4 +55,6 @@ main():
   facility1_data = facility1_data[:-1]
   print np.shape(facility1_data)
   #Generate train and test data
-  X_train, X_test, y_train, y_test = facility1_data[0:100000], facility1_data[100000:], labels[0:100000], labels[100000:]
+  vali_split = 0.2
+  data_shape = np.shape(facility1_data)
+  X_train, X_test, y_train, y_test = facility1_data[0:int(data_shape[0] * (1-vali_split))], facility1_data[int(data_shape[0] * vali_split):], labels[0:int(data_shape[0] * (1-vali_split))], labels[int(data_shape[0] * vali_split):]
