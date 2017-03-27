@@ -1,0 +1,25 @@
+def create_time_series_data(fac_ID, time_series_length, pd_data_frame):
+    facility_records = pd_data_frame.loc[pd_data_frame['facility_id'] == fac_ID]
+    df_shape = facility_records.shape
+    number_of_samples = df_shape[0]
+    req_columns = facility_records.drop(['value', 'facility_id', 'actual_date', 'actual_time', 'actual_interval'], axis=1)
+    min_since_opening = req_columns['minutes_since_park_opening'].tolist()
+    rate_changes = req_columns['rate_of_change'].tolist()
+    time_stamps = req_columns['actual_timestamp'].tolist()
+    day_of_week = req_columns['day_of_the_week'].tolist()
+    minutes = req_columns['minutes_since_park_opening'].tolist()
+    time_series_data = []
+    labels = []
+    for n in range(0, number_of_samples - time_series_length, time_series_length):
+        each_slot = rate_changes[n:n + time_series_length + 1]
+        time_record = time_stamps[n:n + time_series_length + 1]
+        delta_t = [(pd.to_datetime(time_record[time_series_length]) - pd.to_datetime(time_record[t])).seconds / float(60) for t in range(0, time_series_length)]
+        day_name = day_of_week[n:n + time_series_length + 1]
+        minu = minutes[n:n + time_series_length + 1]
+        try:
+            temp = [[i[2], i[3], int(i[0]), i[1]] for i in zip(delta_t, each_slot[0: time_series_length], day_name[0: time_series_length], minu[0: time_series_length])]
+            time_series_data.append([s for t in temp for s in t])
+            labels.append(each_slot[time_series_length])
+        except IndexError:
+            pass
+    return (time_series_data, labels)
